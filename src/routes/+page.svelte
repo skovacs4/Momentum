@@ -4,6 +4,8 @@
   import { auth } from "$lib/firebase";
   import Authentication from "$lib/components/Authentication.svelte";
   import Tasks from "$lib/components/Tasks.svelte";
+  import Points from "$lib/components/Points.svelte";
+  import VirtualCharacter from "$lib/components/VirtualCharacter.svelte";
 
   /**
    * @type {string | null}
@@ -25,6 +27,10 @@
   });
 
   let showModal = false; // State variable to control the visibility of the modal
+  /**
+   * @type {any}
+   */
+  let container; 
 
   function openModal() {
     showModal = true; // Set showModal to true to show the modal
@@ -42,9 +48,11 @@
     <div>
       <h1>CURRENT USER: {email}</h1>
     </div>
+    <VirtualCharacter />
     <Tasks />
     <button on:click={openModal}>Add Task</button>
     <AddTaskModal {showModal} on:closeModal={closeModal} />
+    <Points />
   {:else}
     <!-- If user is not logged in -->
     <Authentication />

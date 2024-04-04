@@ -34,6 +34,7 @@ export const fetchTasksForUser = async () => {
   return new Promise(async (resolve, reject) => {
     try {
       // Start listening for authentication state changes
+      // @ts-ignore
       const unsubscribe = onAuthStateChanged(auth, async (/** @type {{ uid: any; }} */ user) => {
         if (user) {
           // User is authenticated, fetch tasks for the user
@@ -147,6 +148,7 @@ export const listenForTaskUpdates = (
   const tasksCollectionRef = collection(db, `users/${userId}/tasks`);
   const q = query(tasksCollectionRef, orderBy("createdAt", "desc"));
 
+  // @ts-ignore
   return onSnapshot(q, (/** @type {any[]} */ snapshot) => {
     /**
      * @type {any[]}
