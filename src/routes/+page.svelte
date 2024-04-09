@@ -6,6 +6,7 @@
   import Tasks from "$lib/components/Tasks.svelte";
   import Points from "$lib/components/Points.svelte";
   import VirtualCharacter from "$lib/components/VirtualCharacter.svelte";
+  import Leaderboard from '$lib/components/Leaderboard.svelte';
 
   /**
    * @type {string | null}
@@ -14,37 +15,28 @@
   /**
    * @type {import("@firebase/auth").User | null}
    */
-  let user = null; // Initialize user as null initially
+  let user = null;
 
-  // Listen for authentication state changes
   auth.onAuthStateChanged((currentUser) => {
-    user = currentUser; // Update user when authentication state changes
-
-    // If user is logged in, set email
+    user = currentUser;
     if (user) {
       email = user.email;
     }
   });
 
-  let showModal = false; // State variable to control the visibility of the modal
-  /**
-   * @type {any}
-   */
-  let container; 
+  let showModal = false;
 
   function openModal() {
-    showModal = true; // Set showModal to true to show the modal
+    showModal = true;
   }
 
   function closeModal() {
-    showModal = false; // Set showModal to false to hide the modal
+    showModal = false;
   }
 </script>
 
 {#if user !== null}
-  <!-- Check if user is not null -->
   {#if user}
-    <!-- If user is logged in -->
     <div>
       <h1>CURRENT USER: {email}</h1>
     </div>
@@ -53,8 +45,77 @@
     <button on:click={openModal}>Add Task</button>
     <AddTaskModal {showModal} on:closeModal={closeModal} />
     <Points />
+    <Leaderboard />
   {:else}
-    <!-- If user is not logged in -->
     <Authentication />
   {/if}
 {/if}
+
+<style lang="scss">
+  /* Global Styles */
+  :global(body) {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+
+  /* Container Styles */
+  div {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  /* Heading Styles */
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+
+  /* Button Styles */
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Modal Styles */
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  /* Points Styles */
+  .points-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+  }
+</style>

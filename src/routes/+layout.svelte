@@ -9,7 +9,7 @@
   
 	onMount(() => {
 	  const unsubscribe = auth.onAuthStateChanged((user) => {
-		console.log(user);
+		// console.log(user);
 		// Update the authentication state in the store
 		// @ts-ignore
 		authStore.update((curr) => {
@@ -31,8 +31,8 @@
 	  <a href="/login">Login</a>
 	{:else}
 	  <a href="/" on:click|preventDefault={authHandlers.logout}>Logout</a>
+	  <a href="/history">History</a>
 	{/if}
-	<a href="/history">History</a>
   </nav>
   
   <main class="mainContainer">
