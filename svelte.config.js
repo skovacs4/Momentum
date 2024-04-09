@@ -6,13 +6,23 @@ import preprocess from 'svelte-preprocess';
  * @type {import('@sveltejs/kit').Config} 
  */
 const config = {
+  kit: {
+    // Specify target adapter, e.g., 'adapter-static' for static hosting
+    // adapter: 'adapter-static',
+    // ...other SvelteKit options
+  },
   preprocess: preprocess({
     scss: {
       prependData: `@import 'src/styles.scss';`, // Optional: Import global SCSS variables
     },
-    postcss: true, // Enable PostCSS for additional CSS processing
+    postcss: {
+      plugins: [
+        // @ts-ignore
+        require('autoprefixer'), // Add autoprefixer plugin for vendor prefixing
+        // Add other PostCSS plugins here as needed
+      ],
+    },
   }),
-  // ...other SvelteKit options
 };
 
 export default config;
