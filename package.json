@@ -30,6 +30,7 @@
 		"firebase": "^10.10.0",
 		"svelte-dialog": "^0.2.0",
 		"svelte-simple-modal": "^1.6.2",
-		"three": "^0.163.0"
+		"three": "^0.163.0",
+		"uuid": "^9.0.1"
 	}
 }

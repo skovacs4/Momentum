@@ -16,8 +16,9 @@
     if (user) {
       try {
         const userId = user.uid;
-        const { totalPoints: generatedPoints, level: calculatedLevel } = await calculateUserPointsAndLevel(userId);
-        
+        const { totalPoints: generatedPoints, level: calculatedLevel } =
+          await calculateUserPointsAndLevel(userId);
+
         // Update component variables with calculated values
         totalPoints = generatedPoints;
         level = calculatedLevel;
@@ -25,25 +26,30 @@
         // Calculate current points within the current level
         currentLevelPoints = totalPoints % pointsPerLevel;
       } catch (error) {
-        console.error("Error fetching tasks or calculating points/level:", error);
+        console.error(
+          "Error fetching tasks or calculating points/level:",
+          error
+        );
       }
     }
   });
 </script>
 
 <div class="points-container">
+  <h1 class="stats">Stats</h1>
   <!-- Display calculated total points and level -->
-  <p>Level: {level}</p>
   <p>Total Generated Points: {totalPoints}</p>
-
-  <!-- Progress bar for level completion -->
-  <div class="progress-bar">
-    <div class="progress" style="width: {currentLevelPoints / pointsPerLevel * 100}%;"></div>
-    <div class="level-text">{level}</div>
-  </div>
-
   <!-- Display current points within the current level -->
   <p>Current Level Points: {currentLevelPoints}</p>
+  <p>Level: {level}</p>
+  <!-- Progress bar for level completion -->
+  <div class="progress-bar">
+    <div
+      class="progress"
+      style="width: {(currentLevelPoints / pointsPerLevel) * 100}%;"
+    ></div>
+    <div class="level-text">{level}</div>
+  </div>
 </div>
 
 <style>
@@ -66,7 +72,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    background-color: #007bff;
+    background-color: var(--accent-gold);
     transition: width 0.3s ease-in-out;
   }
 

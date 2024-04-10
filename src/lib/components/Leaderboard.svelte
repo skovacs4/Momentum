@@ -3,19 +3,20 @@
   import { calculateUsersPointsAndLevels } from '$lib/stores/database';
 
   /**
-   * @type {any[]}
+   * @type {string | any[]}
    */
-  let usersData = [];
+  let usersData = []; // Initialize usersData as an empty array
 
+  // Fetch users' points and levels data when the component mounts
   onMount(async () => {
     try {
-      // Fetch users' points and levels data
-      usersData = await calculateUsersPointsAndLevels();
+      usersData = await calculateUsersPointsAndLevels(); // Fetch user data
     } catch (error) {
       console.error('Error fetching users\' points and levels:', error);
     }
   });
 
+  // Optional: Clean up resources on component destroy
   onDestroy(() => {
     // Clean up any resources if needed
   });
@@ -23,48 +24,64 @@
 
 <h1>Leaderboard</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Rank</th>
-      <th>User ID</th>
-      <th>Total Points</th>
-      <th>Level</th>
-    </tr>
-  </thead>
-  <tbody>
-    {#each usersData as user, index (user.userId)}
+{#if usersData.length > 0}
+  <table>
+    <thead>
       <tr>
-        <td>{index + 1}</td>
-        <td>{user.userId}</td>
-        <td>{user.totalPoints}</td>
-        <td>{user.level}</td>
+        <th>Rank</th>
+        <th>User ID</th>
+        <th>Total Points</th>
+        <th>Level</th>
       </tr>
-    {/each}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {#each usersData as user, index (user.userId)}
+        <tr>
+          <td>{index + 1}</td>
+          <td>{user.username}</td>
+          <td>{user.totalPoints}</td>
+          <td>{user.level}</td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+{:else}
+  <p>Loading...</p>
+{/if}
 
 <style>
-  h1 {
+
+  /* Ensure the table is scrollable within a minimum height */
+@media (min-height: 768px) {
+    /* Component Styles */
+    h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-top: 100px;
+    color: #6a1b9a; /* Purple */
   }
 
   table {
-    width: 100%;
+    width: 75%;
     border-collapse: collapse;
     border-spacing: 0;
+    margin-top: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 50px auto;
   }
 
   th, td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px;
     text-align: left;
   }
 
   th {
     background-color: #f2f2f2;
     color: #333;
+    text-transform: uppercase;
+    font-weight: bold;
   }
 
   tr:nth-child(even) {
@@ -74,4 +91,30 @@
   tr:hover {
     background-color: #f1f1f1;
   }
+
+  /* Top 3 Styling */
+  tbody tr:nth-child(-n+3) td {
+    font-weight: bold;
+    color: #6a1b9a; /* Purple */
+  }
+
+  /* Top Player Styling */
+  tbody tr:first-child td {
+    position: relative;
+    background-color: #ffd700; /* Gold */
+    color: #6a1b9a; /* Purple */
+    font-weight: bold;
+  }
+
+  tbody tr:first-child td:first-child:before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    background: url('https://img.icons8.com/ios/50/000000/crown--v1.png') no-repeat;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+  }
+}
 </style>

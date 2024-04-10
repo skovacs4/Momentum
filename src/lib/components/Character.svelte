@@ -40,7 +40,7 @@
     ];
   </script>
   
-  <div>
+  <div class="character">
     <!-- Display the character image based on the current startCharacter path -->
     <img src={startCharacter} alt="Character">
   </div>

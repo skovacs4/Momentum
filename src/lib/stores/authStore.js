@@ -1,6 +1,8 @@
 import { createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateEmail, updatePassword } from "firebase/auth";
 import { writable } from "svelte/store";
 import { auth } from '$lib/firebase';
+import { doc, getFirestore, setDoc } from 'firebase/firestore';
+const db = getFirestore();
 
 export const authStore = writable({
     isLoading: true,
@@ -11,14 +13,25 @@ export const authHandlers = {
     login: async (/** @type {string} */ email, /** @type {string} */ password) => {
         await signInWithEmailAndPassword(auth, email, password)
     },
-    signup: async (/** @type {string} */ email, /** @type {string} */ password) => {
-        await createUserWithEmailAndPassword(auth, email, password)
+    signup: async (/** @type {string} */ email, /** @type {string} */ password, /** @type {string} */ username) => { // Add username parameter
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userId = userCredential.user.uid;
+
+            // Store username in Firestore
+            const userRef = doc(db, 'users', userId);
+            await setDoc(userRef, { 
+                username, 
+            });  
+
+        } catch (err) {
+            console.log(err);
+        }
     },
     logout: async () => {
         await signOut(auth)
     },
     resetPassword: async (/** @type {string} */ email) => {
-        console.log('WE ARE HERE', email)
         if (!email) {
             console.log('inHERE')
             return

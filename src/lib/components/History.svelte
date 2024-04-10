@@ -40,3 +40,7 @@
     </div>
   {/each}
 </div>
+
+<style lang="scss">
+  // styles
+</style>

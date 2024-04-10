@@ -1,82 +1,36 @@
-import * as firestore from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, addDoc, setDoc, doc, updateDoc, orderBy, getDoc } from "firebase/firestore";
 import { auth } from "$lib/firebase";
-// @ts-ignore
 import { onAuthStateChanged } from "firebase/auth";
+import { v4 as uuidv4 } from 'uuid'; 
 
+const db = getFirestore();
 
-// Initialize Firestore
-const db = firestore.getFirestore();
-
-// Function to fetch data from the database
-export const fetchTasks = async () => {
-  try {
-    const querySnapshot = await firestore.getDocs(firestore.collection(db, "Tasks"));
-    const data = querySnapshot.docs.map(
-      (/** @type {{ data: () => any; }} */ doc) => doc.data()
-    );
-    return data;
-  } catch (error) {
-    console.error("Error fetching data from database:", error);
-    return null;
-  }
-};
-
-// Function to fetch tasks from the user's specific collection
 export const fetchTasksForUser = async () => {
   return new Promise(async (resolve, reject) => {
     try {
-      // Start listening for authentication state changes
-      // @ts-ignore
-      const unsubscribe = onAuthStateChanged(
-        auth,
-        // @ts-ignore
-        async (/** @type {{ uid: any; }} */ user) => {
-          if (user) {
-            // User is authenticated, fetch tasks for the user
-            const userId = user.uid;
-            const tasksCollectionRef = firestore.collection(db, `users/${userId}/tasks`);
-            try {
-              // Get the documents in the collection
-              const querySnapshot = await firestore.getDocs(tasksCollectionRef);
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const userId = user.uid;
+          const tasksCollectionRef = collection(db, `tasks`);
 
-              // Include ID in the extracted data
-              const data = querySnapshot.docs.map(
-                (/** @type {{ id: any; data: () => any; }} */ doc) => ({
-                  id: doc.id, // Include the document ID
-                  ...doc.data(),
-                })
-              );
+          const querySnapshot = await getDocs(query(tasksCollectionRef, where('userId', '==', userId)));
 
-              // console.log("Tasks:", data);
+          const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-              resolve(data); // Resolve with tasks data
-            } catch (error) {
-              console.error("Error fetching data from database:", error);
-              reject(error); // Reject with error if fetching data fails
-            } finally {
-              // Unsubscribe from the auth state changes listener
-              unsubscribe();
-            }
-          } else {
-            // User is not authenticated
-            console.warn("User is not authenticated");
-            resolve([]); // Resolve with an empty array if user is not authenticated
-          }
+          resolve(data);
+        } else {
+          console.warn("User is not authenticated");
+          resolve([]);
         }
-      );
+      });
     } catch (error) {
       console.error("Error listening for authentication state changes:", error);
-      reject(error); // Reject with error if listening for auth state changes fails
+      reject(error);
     }
   });
 };
 
-// Function to add a new task to the database
-export const addTask = async (
-  /** @type {any} */ title,
-  /** @type {any} */ description,
-  /** @type {any} */ difficulty
-) => {
+export const addTask = async (/** @type {string} */ title, /** @type {string} */ description, /** @type {string} */ difficulty) => {
   try {
     const user = auth.currentUser;
     if (!user) {
@@ -84,9 +38,22 @@ export const addTask = async (
     }
 
     const userId = user.uid;
-    const tasksCollectionRef = firestore.collection(db, `users/${userId}/tasks`);
+    const tasksCollectionRef = collection(db, 'tasks');
+
+    // Fetch the username from the user's document
+    const userDocRef = doc(db, 'users', userId);
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    if (!userDocSnapshot.exists()) {
+      throw new Error("User not found in 'users' collection");
+    }
+
+    const username = userDocSnapshot.data().username;  
+
     // Add the new task document to the collection
-    await firestore.addDoc(tasksCollectionRef, {
+    await addDoc(tasksCollectionRef, {
+      userId,
+      username,
       title,
       description,
       difficulty,
@@ -97,15 +64,13 @@ export const addTask = async (
     console.log("Task added successfully.");
   } catch (error) {
     console.error("Error adding task:", error);
-    throw error;
+    throw error; // Rethrow to let the caller handle it
   }
 };
 
-// Function to update data in the database
-export const editTask = async (
-  /** @type {string} */ taskId,
-  /** @type {object} */ newData
-) => {
+
+
+export const editTask = async (/** @type {string | undefined} */ taskId, /** @type {{ completed?: boolean; title?: string; }} */ newData) => {
   try {
     const user = auth.currentUser;
     if (!user) {
@@ -113,13 +78,10 @@ export const editTask = async (
     }
 
     const userId = user.uid;
-    const tasksCollectionRef = firestore.collection(db, `users/${userId}/tasks`);
+    const tasksCollectionRef = collection(db, `tasks`);
+    const taskDocRef = doc(tasksCollectionRef, taskId);
 
-    // Reference to the specific task document
-    const taskDocRef = firestore.doc(tasksCollectionRef, taskId);
-
-    // Update the task document with new data
-    await firestore.updateDoc(taskDocRef, newData);
+    await updateDoc(taskDocRef, newData);
 
     console.log("Task updated successfully.");
   } catch (error) {
@@ -128,66 +90,75 @@ export const editTask = async (
   }
 };
 
-// Function to calculate total points and levels for all users
+/**
+ * @typedef {Object} UserData
+ * @property {string} userId
+ * @property {string} username 
+ * @property {number} totalPoints
+ * @property {number} level
+ */
+
+/**
+ * Calculate total points, level, and username for each user based on completed tasks.
+ * @returns {Promise<UserData[]>} An array of user data objects.
+ */
 export const calculateUsersPointsAndLevels = async () => {
   try {
-    const usersCollectionRef = firestore.collection(db, 'users');
+    const tasksCollectionRef = collection(db, 'tasks');
+    const userCollectionRef = collection(db, 'users');
 
-    const usersQuerySnapshot = await firestore.getDocsFromServer(usersCollectionRef);
+    const tasksQuerySnapshot = await getDocs(tasksCollectionRef);
+    const userQuerySnapshot = await getDocs(userCollectionRef);
 
-    console.log("User documents:");
-    usersQuerySnapshot.forEach((/** @type {{ id: any; data: () => any; }} */ doc) => {
-      console.log(doc.id, '=>', doc.data());
-    });
+    // Create a map of usernames for efficient lookup
+    const usernameMap = {};
+    // @ts-ignore
+    userQuerySnapshot.forEach(doc => usernameMap[doc.id] = doc.data().username);
 
-    const usersData = [];
+    /** @type {Record<string, UserData>} */
+    const usersData = {};
 
-    for (const userDoc of usersQuerySnapshot.docs) {
-      const userId = userDoc.id;
-      console.log('Processing user:', userId);
+    for (const taskDoc of tasksQuerySnapshot.docs) {
+      const { userId, completed } = taskDoc.data();
 
-      const tasksCollectionRef = firestore.collection(db, `users/${userId}/tasks`);
+      if (!usersData[userId]) {
+        usersData[userId] = { 
+          userId, 
+          // @ts-ignore
+          username: usernameMap[userId], // Look up username
+          totalPoints: 0, 
+          level: 0 
+        };
+      }
 
-      const tasksQuerySnapshot = await firestore.getDocs(tasksCollectionRef);
-
-      const totalPoints = tasksQuerySnapshot.docs
-        .filter(doc => doc.data().completed) // Filter completed tasks
-        .length * 3;
-
-      const level = Math.floor(totalPoints / 30) + 1;
-
-      const userData = {
-        userId,
-        totalPoints,
-        level,
-      };
-
-      usersData.push(userData);
-
-      console.log('Tasks for user', userId, ':', tasksQuerySnapshot.docs.length, 'total,', tasksQuerySnapshot.docs.filter(doc => doc.data().completed).length, 'completed');
+      if (completed) {
+        usersData[userId].totalPoints += 3;
+      }
     }
 
-    return usersData;
+    for (const userId in usersData) {
+      usersData[userId].level = Math.floor(usersData[userId].totalPoints / 30) + 1;
+    }
+
+    const usersDataArray = Object.values(usersData);
+
+    usersDataArray.sort((a, b) => b.totalPoints - a.totalPoints); // Sort in descending order
+
+    return usersDataArray; 
   } catch (error) {
     console.error('Error calculating users\' points and levels:', error);
     throw error;
   }
 };
 
-// Function to calculate total points and level for the logged-in user
-export const calculateUserPointsAndLevel = async (/** @type {string} */ userId) => {
+
+
+export const calculateUserPointsAndLevel = async (/** @type {unknown} */ userId) => {
   try {
-    const tasksCollectionRef = firestore.collection(db, `users/${userId}/tasks`);
+    const tasksCollectionRef = collection(db, `tasks`);
+    const tasksQuerySnapshot = await getDocs(query(tasksCollectionRef, where('userId', '==', userId)));
 
-    // Query all tasks for the current user
-    const tasksQuerySnapshot = await firestore.getDocs(tasksCollectionRef);
-
-    // Calculate total points for the user (each completed task contributes a fixed number of points)
-    const totalPoints = tasksQuerySnapshot.docs
-      .filter(doc => doc.data().completed) // Filter completed tasks
-      .length * 3; // Each completed task contributes 3 points
-
-    // Calculate user's level based on total points (30 points per level)
+    const totalPoints = tasksQuerySnapshot.docs.filter(doc => doc.data().completed).length * 3;
     const level = Math.floor(totalPoints / 30) + 1;
 
     return { totalPoints, level };
@@ -197,44 +168,3 @@ export const calculateUserPointsAndLevel = async (/** @type {string} */ userId) 
   }
 };
 
-
-// Add completed tasks to leaderboard
-/**
- * @param {string} userId
- * @param {any} totalPoints
- * @param {any} level
- */
-// Define an async function to update the leaderboard in Firestore
-export async function updateLeaderboard(userId, totalPoints, level) {
-  try {
-    const db = firestore.getFirestore(); // Get Firestore instance
-    const leaderboardRef = firestore.doc(db, 'leaderboard', userId); // Reference to the leaderboard document
-
-    // Set the leaderboard document with the provided data
-    await firestore.setDoc(leaderboardRef, {
-      userId,
-      totalPoints,
-      level
-    });
-
-    console.log("Leaderboard updated successfully!");
-  } catch (error) {
-    console.error("Error updating leaderboard:", error);
-    throw error; // Rethrow the error to handle it upstream
-  }
-}
-
-export const fetchLeaderboard = async () => {
-  const db = firestore.getFirestore();
-  const leaderboardRef = firestore.collection(db, 'leaderboard');
-
-  // Order leaderboard entries by totalPoints (descending)
-  // @ts-ignore
-  const query = orderBy(leaderboardRef, 'totalPoints', 'desc'); 
-
-  // @ts-ignore
-  const querySnapshot = await getDocs(query);
-  const leaderboardData = querySnapshot.docs.map((/** @type {{ data: () => any; id: any; }} */ doc) => ({ ...doc.data(), id: doc.id }));
-
-  return leaderboardData;  
-}
