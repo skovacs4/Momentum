@@ -1,10 +1,12 @@
 <!-- CharacterSelectorModal.svelte -->
 <script>
-    let characters = [
-      {
-        name: 'Character 1',
-        embedUrl: 'https://sketchfab.com/models/019f4b3fd3c74ed0bc6c8dbe9cd50d51/embed?autostart=1&preload=1'
-      },
+// @ts-nocheck
+
+    // let characters = [
+      // {
+      //   name: 'Character 1',
+      //   embedUrl: 'https://sketchfab.com/models/019f4b3fd3c74ed0bc6c8dbe9cd50d51/embed?autostart=1&preload=1'
+      // },
     //   {
     //     name: 'Character 2',
     //     embedUrl: 'https://sketchfab.com/models/9311de5091774973ac166dc4f4fc850b/embed?autostart=1&preload=1'
@@ -26,7 +28,14 @@
     //     embedUrl: 'https://sketchfab.com/models/019f4b3fd3c74ed0bc6c8dbe9cd50d51/embed?autostart=1&preload=1'
     //   },
     
-    ];
+    //];
+
+    let characters = [
+      {
+        name: 'Character 1',
+        embedUrl: 'https://sketchfab.com/models/019f4b3fd3c74ed0bc6c8dbe9cd50d51/embed?autostart=1&preload=1'
+      },
+    ]
   
     let showModal = false;
     let selectedCharacter = null;
@@ -39,6 +48,9 @@
       showModal = false;
     }
   
+    /**
+     * @param {{ name: string; embedUrl: string; }} character
+     */
     function selectCharacter(character) {
       selectedCharacter = character;
       console.log('Selected Character:', character);
@@ -55,8 +67,11 @@
         <h2>Select a Character</h2>
         <div class="character-grid">
           {#each characters as character}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <div class="character-item" on:click={() => selectCharacter(character)}>
               <!-- Invisible overlay with hover effect -->
+              <!-- svelte-ignore a11y-no-static-element-interactions -->
               <div class="overlay" on:click={closeModal} />
               <iframe
                 title={character.name}

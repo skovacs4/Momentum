@@ -6,7 +6,8 @@
   import Tasks from "$lib/components/Tasks.svelte";
   import Points from "$lib/components/Points.svelte";
   import VirtualCharacter from "$lib/components/VirtualCharacter.svelte";
-  import Leaderboard from '$lib/components/Leaderboard.svelte';
+  import Leaderboard from "$lib/components/Leaderboard.svelte";
+  import Character from "$lib/components/Character.svelte";
 
   /**
    * @type {string | null}
@@ -40,7 +41,7 @@
     <div>
       <h1>CURRENT USER: {email}</h1>
     </div>
-    <VirtualCharacter />
+    <Character />
     <Tasks />
     <button on:click={openModal}>Add Task</button>
     <AddTaskModal {showModal} on:closeModal={closeModal} />
@@ -54,7 +55,7 @@
 <style lang="scss">
   /* Global Styles */
   :global(body) {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;

@@ -13,13 +13,14 @@
 	import { browser } from "$app/environment";
 	import * as THREE from "three";
 	import { onMount } from "svelte";
-	import { fetchCharacter } from "$lib/stores/database";
 	import { auth } from "$lib/firebase";
 	import SelectCharacter from "$lib/components/SelectCharacter.svelte";
   
 	const user = auth.currentUser;
 	var character = null;
 	var characterData = null;
+
+	var startCharacter = "characters/bull-pixel.png";
   
 	onMount(async () => {
 	  if (user) {
@@ -90,8 +91,8 @@
 	});
   </script>
   
-  <div id="three-container" style="width: 400px; height: 400px;"></div>
-  <div class="sketchfab-embed-wrapper">
+  <!-- <div id="three-container" style="width: 400px; height: 400px;"></div> -->
+  <!-- <div class="sketchfab-embed-wrapper">
 	<iframe
 	  title="Cyberpunk character"
 	  frameborder="0"
@@ -105,6 +106,9 @@
 	  web-share
 	  src="https://sketchfab.com/models/019f4b3fd3c74ed0bc6c8dbe9cd50d51/embed?autostart=1&preload=1"
 	></iframe>
+  </div> -->
+  <div>
+	<img src={startCharacter} alt="Character">
   </div>
   <SelectCharacter />
   
