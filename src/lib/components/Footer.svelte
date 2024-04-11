@@ -1,11 +1,12 @@
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-content">
-    <p class="footer-text">Momentum 2024</p>
+    <p class="footer-text-copy">Momentum &copy; 2024</p>
+    <p>Stefan Valentin Kovacs - w20000442</p>
   </div>
 </footer>
 
-<style>
+<style lang="scss">
   .footer {
     background-color: #333;
     color: #fff;
@@ -14,12 +15,13 @@
   }
 
   .footer-content {
-    max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 50px;
   }
 
-  .footer-text {
-    font-size: 14px;
-    margin: 0;
+  p {
+    font-size: 15px;
   }
 </style>

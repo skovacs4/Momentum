@@ -23,8 +23,13 @@
     overflow: hidden; /* Prevent vertical scrolling if content overflows */
   }
 
+  h1 {
+    font-size: 42px;
+  }
+
   .dashboard {
     background-color: beige;
+    min-height: 100vh;
     .character-container {
       background-color: beige;
       display: flex;

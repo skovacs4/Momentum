@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { calculateUsersPointsAndLevels } from '$lib/stores/database';
+    import { auth } from '$lib/firebase';
 
   /**
    * @type {string | any[]}
@@ -9,11 +10,14 @@
 
   // Fetch users' points and levels data when the component mounts
   onMount(async () => {
-    try {
+    const user = auth.currentUser;
+    if (user) {
+        try {
       usersData = await calculateUsersPointsAndLevels(); // Fetch user data
     } catch (error) {
       console.error('Error fetching users\' points and levels:', error);
     }
+  }
   });
 
   // Optional: Clean up resources on component destroy
@@ -29,7 +33,7 @@
     <thead>
       <tr>
         <th>Rank</th>
-        <th>User ID</th>
+        <th>Username</th>
         <th>Total Points</th>
         <th>Level</th>
       </tr>

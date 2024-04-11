@@ -13,12 +13,15 @@
       <a href="/" on:click|preventDefault={authHandlers.logout}>Logout</a>
     {/if}
   </nav>
+  <a href="/" class="logo-header-container"><img src="assets/wonder-5-alt.png" alt="logo" class="logo-header"></a>
 </header>
 
 <style lang="scss">
   header {
     z-index: 10;
     background-color: white;
+    display: flex;
+    justify-content: space-between;
 
     nav {
       text-align: center;
@@ -39,9 +42,16 @@
 
       a:hover {
         color: var(--accent-orange);
-        background-color: aliceblue;
         border-bottom: var(--accent-orange) 1px solid;
       }
+    }
+
+    .logo-header {
+      width: 75px;
+    }
+
+    .logo-header-container {
+      padding-right: 2.5%;
     }
   }
 </style>

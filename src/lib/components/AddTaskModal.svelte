@@ -3,10 +3,9 @@
   import { addTask } from "$lib/stores/database";
 
   /**
-   * @type {boolean}
-   * @prop
-   */
-  export let showModal; // Define showModal prop
+     * @type {any}
+     */
+   export let showModal;
 
   const dispatch = createEventDispatcher();
 
@@ -14,21 +13,48 @@
   let description = "";
   let difficulty = "";
 
-  // Function to close the modal
+  let titleError = "";
+  let descriptionError = "";
+
   function closeModal() {
     dispatch("closeModal");
+    // Reset form fields and validation errors
+    title = "";
+    description = "";
+    difficulty = "";
+    titleError = "";
+    descriptionError = "";
   }
 
-  // Function to handle form submission
   /**
-   * @param {{ preventDefault: () => void; }} event
-   */
+     * @param {{ preventDefault: () => void; }} event
+     */
   function handleSubmit(event) {
     event.preventDefault();
-    addTask(title, description, difficulty)
+
+    // Reset previous validation errors
+    titleError = "";
+    descriptionError = "";
+
+    // Validate form fields
+    if (!title || title.trim() === "") {
+      titleError = "Please enter a task title.";
+      return;
+    }
+
+    if (!description || description.trim().length < 30) {
+      descriptionError = "Please enter a description with at least 30 characters.";
+      return;
+    }
+
+    // Capitalize the title
+    const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
+
+    // If form is valid, add the task with capitalized title
+    addTask(capitalizedTitle, description, difficulty)
       .then(() => {
         console.log("Task added successfully.");
-        closeModal();
+        closeModal(); // Reset form after task is added
       })
       .catch((error) => {
         console.error("Error adding task:", error);
@@ -38,15 +64,11 @@
 
 <div class="modal" style={showModal ? "display: block;" : "display: none;"}>
   <div class="modal-content">
-    <!-- Modal header -->
     <div class="modal-header">
       <h2>Add New Task</h2>
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <span class="close" on:click={closeModal}>&times;</span>
     </div>
 
-    <!-- Modal body (form for adding a new task) -->
     <div class="modal-body">
       <form on:submit={handleSubmit}>
         <label for="taskTitle">Task Title:</label>
@@ -57,28 +79,28 @@
           bind:value={title}
           placeholder="Enter task title"
         />
+        {#if titleError}
+          <p class="error">{titleError}</p>
+        {/if}
 
         <label for="taskDescription">Description:</label>
-        <input
-          type="text"
+        <textarea
           id="taskDescription"
           name="taskDescription"
           bind:value={description}
-          placeholder="Enter task description"
-        />
+          placeholder="Enter task description (minimum 30 characters)"
+        ></textarea>
+        {#if descriptionError}
+          <p class="error">{descriptionError}</p>
+        {/if}
 
         <label for="taskDifficulty">Difficulty:</label>
-        <select
-          id="taskDifficulty"
-          name="taskDifficulty"
-          bind:value={difficulty}
-        >
+        <select id="taskDifficulty" name="taskDifficulty" bind:value={difficulty}>
           <option value="easy">Easy</option>
           <option value="moderate">Moderate</option>
           <option value="hard">Hard</option>
         </select>
 
-        <!-- Modal footer (buttons for actions) -->
         <div class="modal-footer">
           <button type="button" on:click={closeModal}>Cancel</button>
           <button type="submit">Add Task</button>
@@ -91,16 +113,16 @@
 <style>
   /* Modal styles */
   .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 1;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-    padding-top: 60px; /* Location of the box */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
   }
 
   .modal-content {
@@ -109,6 +131,7 @@
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+    max-width: 600px;
   }
 
   .modal-header,
@@ -133,6 +156,35 @@
   .close:focus {
     color: black;
     text-decoration: none;
+    cursor: pointer;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+
+  .error {
+    color: red;
+    margin-top: 5px;
+    font-size: 14px;
+  }
+
+  .modal-footer button {
+    padding: 10px 20px;
+    margin-right: 10px;
     cursor: pointer;
   }
 </style>
