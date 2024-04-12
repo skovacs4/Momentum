@@ -13,7 +13,9 @@
       <a href="/" on:click|preventDefault={authHandlers.logout}>Logout</a>
     {/if}
   </nav>
-  <a href="/" class="logo-header-container"><img src="assets/wonder-5-alt.png" alt="logo" class="logo-header"></a>
+  <a href="/" class="logo-header-container"
+    ><img src="assets/wonder-5-alt.png" alt="logo" class="logo-header" /></a
+  >
 </header>
 
 <style lang="scss">
@@ -33,16 +35,35 @@
         text-decoration: none;
         color: var(--primary-color);
         padding: 25px;
-        // border-radius: 10px;
+        line-height: 32px;
+        position: relative;
+        font-weight: 500;
       }
 
       a:visited {
+        color: var(--primary-color);
+      }
 
+      a::after {
+        content: "";
+        position: absolute;
+        bottom: 1px; /* Position the line vertically at the middle of the link */
+        left: 50%; /* Position the line horizontally at the middle of the link */
+        transform: translate(-50%, 50%); /* Center the line precisely */
+        width: 0;
+        height: 2px;
+        background-color: var(--accent-orange);
+        transition: width 0.3s ease; /* Transition width for animation */
+      }
+
+      a:hover::after {
+        width: calc(
+          100% - 50px
+        ); /* Expand the line to 100% width minus some padding */
       }
 
       a:hover {
         color: var(--accent-orange);
-        border-bottom: var(--accent-orange) 1px solid;
       }
     }
 

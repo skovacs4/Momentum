@@ -110,7 +110,7 @@
   </div>
 </div>
 
-<style>
+<style lang="scss">
   /* Modal styles */
   .modal {
     display: none;
@@ -132,6 +132,7 @@
     border: 1px solid #888;
     width: 80%;
     max-width: 600px;
+    border-radius: 12px;
   }
 
   .modal-header,
@@ -139,6 +140,10 @@
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
     text-align: center;
+
+    h2 {
+      text-align: left;
+    }
   }
 
   .modal-body {

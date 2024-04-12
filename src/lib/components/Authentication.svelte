@@ -121,7 +121,7 @@
   .auth-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    // align-items: center;
     height: 100vh; /* Full viewport height */
     background-color: #f9f9f9;
   }
@@ -131,12 +131,13 @@
     padding: 50px;
     box-sizing: border-box; /* Ensure padding doesn't increase element size */
     text-align: center;
+    align-self: center;
   }
 
   .image-container {
     display: flex;
     justify-content: right;
-    padding-bottom: 75px;
+    // padding-bottom: 75px;
   }
 
   h1 {

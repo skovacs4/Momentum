@@ -1,4 +1,6 @@
 <!-- History.svelte -->
+
+<!-- Import statements and component setup -->
 <script>
   import { fetchTasksForUser } from "$lib/stores/database";
   import { auth } from "$lib/firebase";
@@ -29,15 +31,27 @@
   function countCompletedTasks(tasks) {
     return tasks.filter((/** @type {{ completed: any; }} */ task) => task.completed).length;
   }
+
+  /**
+   * Format a date string into a human-readable format
+   * @param {string} dateString - The date string to format
+   * @returns {string} The formatted date in 'YYYY-MM-DD' format
+   */
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' });
+  }
 </script>
 
+<!-- Component template -->
 <div class="tasks-container">
-  <h1> History </h1>
+  <h1>History</h1>
   <table class="tasks-table">
     <thead>
       <tr>
         <th>Task</th>
         <th>Status</th>
+        <th>Created At</th> <!-- Add a new column for Created At -->
       </tr>
     </thead>
     <tbody>
@@ -45,16 +59,18 @@
         <tr class:completed={task.completed}>
           <td>{task.title}</td>
           <td>{task.completed ? 'Completed' : 'Pending'}</td>
+          <td>{formatDate(task.createdAt)}</td> <!-- Display the createdAt date -->
         </tr>
       {/each}
     </tbody>
   </table>
 </div>
 
+<!-- Component styles -->
 <style lang="scss">
   .tasks-container {
     margin-top: 20px;
-    padding: 75px;
+    padding: 20px;
   }
 
   .tasks-table {
@@ -62,7 +78,8 @@
     border-collapse: collapse;
   }
 
-  .tasks-table th, .tasks-table td {
+  .tasks-table th,
+  .tasks-table td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;

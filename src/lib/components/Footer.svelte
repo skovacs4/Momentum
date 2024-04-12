@@ -2,7 +2,7 @@
 <footer class="footer">
   <div class="footer-content">
     <p class="footer-text-copy">Momentum &copy; 2024</p>
-    <p>Stefan Valentin Kovacs - w20000442</p>
+    <p>Stefan Valentin Kovacs - W20000442</p>
   </div>
 </footer>
 

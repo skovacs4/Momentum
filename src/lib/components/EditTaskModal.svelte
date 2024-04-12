@@ -71,7 +71,7 @@
   </div>
 </div>
 
-<style>
+<style lang="scss">
   /* Modal styles */
   .modal {
     display: none;
@@ -84,6 +84,7 @@
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
     padding-top: 60px;
+    border-radius: 12px;
   }
 
   .modal-content {
@@ -100,6 +101,10 @@
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
     text-align: center;
+    
+    h2 {
+      text-align: left;
+    }
   }
 
   .modal-body {
@@ -137,7 +142,7 @@
   }
 
   .error {
-    color: red;
+    color: rgb(221, 57, 57);
     font-size: 14px;
     margin-top: 5px;
   }

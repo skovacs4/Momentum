@@ -45,7 +45,7 @@
   {#each tasks.filter((task) => !task.completed) as task}
     <div class="task">
       <div class="shrink-0 bg-gray-100 h-50px w-50px"></div>
-      <span>{task.title}</span>
+      <span class="title">{task.title}</span>
       <button on:click={() => openEditModal(task)}>Edit</button>
       <button on:click={() => openCompleteModal(task)}>Complete</button>
     </div>

@@ -52,7 +52,7 @@
   </div>
 </div>
 
-<style>
+<style lang="scss">
   .points-container {
     margin-top: 20px;
   }
@@ -61,10 +61,11 @@
     position: relative;
     width: 100%;
     height: 20px;
-    background-color: #999;
+    // background-color: var(--magic-purple);
     border-radius: 5px;
     margin-top: 10px;
     overflow: hidden;
+    border: 2px solid rgba(241, 238, 238, 0.3);
   }
 
   .progress {
@@ -72,7 +73,9 @@
     top: 0;
     left: 0;
     height: 100%;
-    background-color: var(--accent-gold);
+    // background-color: var(--accent-gold);
+    // background: linear-gradient(135deg, #ffd700, #ff6347, #40e0d0);
+    background: linear-gradient(135deg, #ffd700, rgb(125, 206, 32), #ff6347);
     transition: width 0.3s ease-in-out;
   }
 
