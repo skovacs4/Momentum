@@ -37,6 +37,7 @@
       "characters/lion-pixel.png",   // Level 6
       "characters/bear-pixel.png",   // Level 7
       "characters/rhino-pixel.png",  // Level 8
+      "characters/rhino-pixel-2.png",  // Level 9
     ];
   </script>
   

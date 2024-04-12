@@ -7,3 +7,6 @@ export const selectedTaskStore = writable(null);
 
 // Define writable store for selected task
 export const selectedTaskStoreSecond = writable(null);
+
+// Define writable store for selected task
+export const tasksStore = writable([]);

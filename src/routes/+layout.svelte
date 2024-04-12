@@ -25,6 +25,10 @@
   });
 </script>
 
+<svelte:head>
+  <title>Momentum</title>
+</svelte:head>
+
 <Header />
 <main class="mainContainer">
   <slot />
@@ -36,6 +40,6 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-	background-color: #f1f1f1;
+    background: linear-gradient(120deg, #6a5acd, #00bfff); /* Gamified linear gradient */
   }
 </style>

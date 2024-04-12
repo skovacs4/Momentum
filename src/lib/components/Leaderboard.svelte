@@ -61,7 +61,7 @@
     h1 {
     text-align: center;
     margin-top: 100px;
-    color: #6a1b9a; /* Purple */
+    color: white; /* Purple */
   }
 
   table {
