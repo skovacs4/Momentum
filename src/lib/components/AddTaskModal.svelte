@@ -42,8 +42,8 @@
       return;
     }
 
-    if (!description || description.trim().length < 30) {
-      descriptionError = "Please enter a description with at least 30 characters.";
+    if (!description || description.trim().length > 60) {
+      descriptionError = "Please enter a maximum of 60 characters for the description.";
       return;
     }
 
@@ -88,7 +88,7 @@
           id="taskDescription"
           name="taskDescription"
           bind:value={description}
-          placeholder="Enter task description (minimum 30 characters)"
+          placeholder="Enter task description (maximum 60 characters)"
         ></textarea>
         {#if descriptionError}
           <p class="error">{descriptionError}</p>

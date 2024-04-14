@@ -1,7 +1,7 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
-  import { calculateUsersPointsAndLevels } from '$lib/stores/database';
-    import { auth } from '$lib/firebase';
+  import { onMount, onDestroy } from "svelte";
+  import { calculateUsersPointsAndLevels } from "$lib/stores/database";
+  import { auth } from "$lib/firebase";
 
   /**
    * @type {string | any[]}
@@ -12,12 +12,12 @@
   onMount(async () => {
     const user = auth.currentUser;
     if (user) {
-        try {
-      usersData = await calculateUsersPointsAndLevels(); // Fetch user data
-    } catch (error) {
-      console.error('Error fetching users\' points and levels:', error);
+      try {
+        usersData = await calculateUsersPointsAndLevels(); // Fetch user data
+      } catch (error) {
+        console.error("Error fetching users' points and levels:", error);
+      }
     }
-  }
   });
 
   // Optional: Clean up resources on component destroy
@@ -26,42 +26,81 @@
   });
 </script>
 
-<h1>Leaderboard</h1>
+<div class="leaderboard">
+  <img src="assets/trophy.png" alt="Logo" class="trophy_img" />
+  <h1>Leaderboard</h1>
 
-{#if usersData.length > 0}
-  <table>
-    <thead>
-      <tr>
-        <th>Rank</th>
-        <th>Username</th>
-        <th>Total Points</th>
-        <th>Level</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each usersData as user, index (user.userId)}
+  {#if usersData.length > 0}
+    <table>
+      <thead>
         <tr>
-          <td>{index + 1}</td>
-          <td>{user.username}</td>
-          <td>{user.totalPoints}</td>
-          <td>{user.level}</td>
+          <th>Rank</th>
+          <th>Username</th>
+          <th>Total Points</th>
+          <th>Level</th>
         </tr>
-      {/each}
-    </tbody>
-  </table>
-{:else}
-  <p>Loading...</p>
-{/if}
+      </thead>
+      <tbody>
+        {#each usersData as user, index (user.userId)}
+          <tr>
+            <td>{index + 1}</td>
+            <td>{user.username}</td>
+            <td>{user.totalPoints}</td>
+            <td>{user.level}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  {:else}
+    <p>Loading...</p>
+  {/if}
+</div>
 
-<style>
+<style lang="scss">
+  @media (max-width: 768px) {
+    .leaderboard {
+      h1 {
+        text-align: left;
+        color: var(--text); /* Purple */
+        padding-left: 10px;
+        font-size: 21px;
+      }
+
+      table {
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+        font-size: 14px;
+      }
+
+      .trophy_img {
+        width: 175px;
+      }
+    }
+  }
 
   /* Ensure the table is scrollable within a minimum height */
-@media (min-height: 768px) {
-    /* Component Styles */
-    h1 {
+  // @media (min-width: 768px) {
+  /* Component Styles */
+  h1 {
     text-align: center;
-    margin-top: 100px;
-    color: white; /* Purple */
+    color: var(--text); /* Purple */
+  }
+
+  .leaderboard {
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative; /* Ensure positioning context for pseudo-element */
+  }
+
+  .trophy_img {
+    align-self: center;
+    z-index: 5;
   }
 
   table {
@@ -73,52 +112,54 @@
     border-radius: 8px;
     overflow: hidden;
     margin: 50px auto;
+    z-index: 5;
+    color: var(--text);
   }
 
-  th, td {
-    border: 1px solid #ddd;
+  th,
+  td {
     padding: 12px;
     text-align: left;
   }
 
   th {
-    background-color: #f2f2f2;
-    color: #333;
+    // background-color: #f2f2f2;
     text-transform: uppercase;
     font-weight: bold;
+    border: 1px solid var(--text);
   }
 
   tr:nth-child(even) {
-    background-color: #f9f9f9;
+    // background-color: #f9f9f9;
   }
 
   tr:hover {
-    background-color: #f1f1f1;
+    // background-color: #f1f1f1;
   }
 
   /* Top 3 Styling */
-  tbody tr:nth-child(-n+3) td {
+  tbody tr:nth-child(-n + 3) td {
     font-weight: bold;
-    color: #6a1b9a; /* Purple */
   }
 
   /* Top Player Styling */
   tbody tr:first-child td {
     position: relative;
-    background-color: #ffd700; /* Gold */
-    color: #6a1b9a; /* Purple */
+    background-color: var(--accent-gold); /* Gold */
     font-weight: bold;
+    color: var(--primary-color);
   }
 
   tbody tr:first-child td:first-child:before {
-    content: '';
+    content: "";
     position: absolute;
     top: 10px;
     right: 25px;
-    background: url('https://img.icons8.com/ios/50/000000/crown--v1.png') no-repeat;
+    background: url("https://img.icons8.com/ios/50/000000/crown--v1.png")
+      no-repeat;
     width: 20px;
     height: 20px;
     background-size: contain;
   }
-}
+  // }
 </style>

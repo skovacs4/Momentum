@@ -6,6 +6,8 @@
   import Tasks from "$lib/components/Tasks.svelte";
   import Points from "$lib/components/Points.svelte";
   import Character from "$lib/components/Character.svelte";
+  import { RiSystemAddLargeFill } from "svelte-icons-pack/ri";
+  import { Icon } from "svelte-icons-pack";
 
   /**
    * @type {string | null}
@@ -42,7 +44,7 @@
         <Character />
       </div>
       <Tasks />
-      <button class="add-task-btn" on:click={openModal}>Add Task</button>
+      <button class="add-task-btn" on:click={openModal}><Icon src={RiSystemAddLargeFill} className="add-task-icon"/></button>
       <AddTaskModal {showModal} on:closeModal={closeModal} />
     {:else}
       <Authentication />

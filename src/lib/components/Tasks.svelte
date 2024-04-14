@@ -1,7 +1,8 @@
 <!-- TasksList.svelte -->
 <script>
   // @ts-nocheck
-
+  import { Icon } from "svelte-icons-pack";
+  import { IoCheckmarkCircleOutline } from "svelte-icons-pack/io";
   import { fetchTasksForUser } from "$lib/stores/database";
   import { auth } from "$lib/firebase";
   import EditTaskModal from "$lib/components/EditTaskModal.svelte";
@@ -44,10 +45,16 @@
   <!-- Render the tasks data -->
   {#each tasks.filter((task) => !task.completed) as task}
     <div class="task">
-      <div class="shrink-0 bg-gray-100 h-50px w-50px"></div>
-      <span class="title">{task.title}</span>
-      <button on:click={() => openEditModal(task)}>Edit</button>
-      <button on:click={() => openCompleteModal(task)}>Complete</button>
+      <div class="task-details">
+        <p class="title">{task.title}</p>
+        <p class="description">{task.description}</p>
+      </div>
+      <div class="task-buttons">
+        <button on:click={() => openEditModal(task)} class="edit">Edit</button>
+        <!-- svelte-ignore missing-declaration -->
+        <button on:click={() => openCompleteModal(task)} class="complete"><Icon src={IoCheckmarkCircleOutline} className="complete-icon" /></button>
+      </div>
+
     </div>
   {/each}
   <EditTaskModal {selectedTaskStore} />

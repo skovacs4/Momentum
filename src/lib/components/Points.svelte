@@ -41,7 +41,6 @@
   <p>Total Generated Points: {totalPoints}</p>
   <!-- Display current points within the current level -->
   <p>Current Level Points: {currentLevelPoints}</p>
-  <p>Level: {level}</p>
   <!-- Progress bar for level completion -->
   <div class="progress-bar">
     <div
@@ -50,9 +49,11 @@
     ></div>
     <div class="level-text">{level}</div>
   </div>
+  <p>Lvl. {level}</p>
 </div>
 
 <style lang="scss">
+
   .points-container {
     margin-top: 20px;
   }
@@ -73,9 +74,8 @@
     top: 0;
     left: 0;
     height: 100%;
-    // background-color: var(--accent-gold);
-    // background: linear-gradient(135deg, #ffd700, #ff6347, #40e0d0);
-    background: linear-gradient(135deg, #ffd700, rgb(125, 206, 32), #ff6347);
+    // background-color: var(--accent-orange);
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));;
     transition: width 0.3s ease-in-out;
   }
 
@@ -84,7 +84,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: white;
+    color: var(--text);
     font-weight: bold;
   }
 </style>
