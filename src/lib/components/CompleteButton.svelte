@@ -40,8 +40,6 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <span class="close" on:click={closeModal}>&times;</span>
       </div>
-      <div class="modal-body">
-      </div>
       <div class="modal-footer">
         <button on:click={handleSubmit}>Continue</button>
         <button on:click={closeModal}>Cancel</button>
@@ -49,7 +47,8 @@
     </div>
   </div>
   
-  <style>
+  <style lang="scss">
+
     /* Modal styles */
     .modal {
       display: none; /* Hidden by default */
@@ -70,36 +69,22 @@
     }
   
     .modal-content {
-      background-color: #fefefe;
+      background-color: var(--magic-purple);
       margin: auto;
       padding: 20px;
-      border: 1px solid #888;
-      width: 25%;
+      border: 1px solid #333;
     }
   
     .modal-header,
     .modal-footer {
       padding: 10px 0;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
+      text-align: center !important;
+
+      h2 {
+        text-align: center;
+      }
     }
-  
-    .modal-body {
-      padding: 20px 0;
-    }
-  
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-  
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
+
+
   </style>
   

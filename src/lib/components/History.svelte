@@ -41,7 +41,7 @@
    */
   function countCompletedTasks(tasks) {
     return tasks.filter(
-      (/** @type {{ completed: any; }} */ task) => task.completed
+      (/** @type {{ completed: any; }} */ task) => task.completed,
     ).length;
   }
 
@@ -161,7 +161,6 @@
         border-bottom: 1px solid rgba(#ddd, 0.5);
         color: $primary-color;
         cursor: pointer;
-
       }
 
       td:last-child {
@@ -205,13 +204,17 @@
   }
 
   .modal-content {
-    background-color: #fff;
+    background-color: var(--magic-purple);
     padding: 20px;
     border-radius: 8px;
     width: 80%;
     max-width: 600px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     text-align: left;
+  }
+
+  .modal-content button {
+    text-align: center !important;
   }
 
   .modal-content h2 {
@@ -221,15 +224,23 @@
 
   .modal-content p {
     margin-bottom: 8px;
+    max-width: 100%;
+    word-wrap: break-word;
   }
 
   .modal-content button {
-    padding: 8px 16px;
-    background-color: $secondary-color;
-    color: $primary-color;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+      align-items: center;
+      padding: 15px;
+      background-color: var(--primary-color);
+      color: var(--text);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 25px;
+  }
+
+  .modal-content button:hover {
+    background-color: var(--secondary-color);
   }
 </style>

@@ -2,6 +2,7 @@
 <script>
   // @ts-nocheck
   import { Icon } from "svelte-icons-pack";
+  import { CiEdit } from "svelte-icons-pack/ci";
   import { IoCheckmarkCircleOutline } from "svelte-icons-pack/io";
   import { fetchTasksForUser } from "$lib/stores/database";
   import { auth } from "$lib/firebase";
@@ -50,7 +51,7 @@
         <p class="description">{task.description}</p>
       </div>
       <div class="task-buttons">
-        <button on:click={() => openEditModal(task)} class="edit">Edit</button>
+        <button on:click={() => openEditModal(task)} class="edit"><Icon src={CiEdit} className="edit-icon" /></button>
         <!-- svelte-ignore missing-declaration -->
         <button on:click={() => openCompleteModal(task)} class="complete"><Icon src={IoCheckmarkCircleOutline} className="complete-icon" /></button>
       </div>

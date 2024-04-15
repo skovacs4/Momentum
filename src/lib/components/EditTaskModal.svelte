@@ -49,13 +49,13 @@
     </div>
     <div class="modal-body">
       <label>New Title:</label>
-      <input type="text" bind:value={newTitle} />
+      <input type="text" bind:value={newTitle} placeholder="{$selectedTaskStore ? $selectedTaskStore.title : ""}"/>
       {#if $selectedTaskStore && (!newTitle || newTitle.trim() === "")}
         <p class="error">Please enter a new title.</p>
       {/if}
 
       <label>New Description:</label>
-      <textarea bind:value={newDescription}></textarea>
+      <textarea bind:value={newDescription} placeholder="{$selectedTaskStore ? $selectedTaskStore.description : ""}"></textarea>
       {#if $selectedTaskStore && (!newDescription || newDescription.trim().length < 30)}
         <p class="error">Please enter a new description with at least 30 characters.</p>
       {/if}
@@ -88,7 +88,7 @@
   }
 
   .modal-content {
-    background-color: #fefefe;
+    background-color: var(--magic-purple);
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
@@ -111,20 +111,6 @@
     padding: 20px 0;
   }
 
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-  }
-
   label {
     display: block;
     margin-bottom: 10px;
@@ -142,12 +128,12 @@
   }
 
   .error {
-    color: rgb(221, 57, 57);
+    color: var(--accent-orange);
     font-size: 14px;
     margin-top: 5px;
   }
 
-  .current-title {
+  .current-title, .current-description {
     margin-top: 15px;
     font-weight: bold;
   }
