@@ -64,6 +64,7 @@
 <div class="auth-container">
   <div class="form-container">
     <h1>{register ? "Register" : "Login"}</h1>
+    <p>{register ? "Complete the form below to create a new account." : "Welcome back!"}</p>
     <form>
       <label>
         <input bind:value={email} type="email" placeholder="Email" />
@@ -83,7 +84,7 @@
           />
         </label>
       {/if}
-      <button on:click={handleSubmit}>Submit</button>
+      <button on:click={handleSubmit}>{register ? "Submit" : "Sign In"}</button>
     </form>
     {#if !register}
       <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -117,6 +118,24 @@
 </div>
 
 <style lang="scss">
+
+  @media screen and (max-width: 1110px) {
+    .auth-container {
+
+
+      .form-container {
+        width: 100%;
+
+        input {
+          width: 425px;
+        }
+      }
+
+      .image-container {
+        display: none;
+      }
+    }
+  }
 
   .auth-container {
     display: flex;
@@ -158,7 +177,7 @@
 
   input {
     padding: 12px;
-    border: 1px solid #ccc;
+    border: 1px solid #ccc !important;
     border-radius: 4px;
     font-size: 16px;
     width: 500px;
@@ -172,7 +191,7 @@
     color: #fff;
     font-size: 16px;
     cursor: pointer;
-	width: 525px;
+	width: 25%;
 	margin: auto;
   }
 

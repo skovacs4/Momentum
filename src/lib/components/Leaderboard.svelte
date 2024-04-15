@@ -27,7 +27,8 @@
 </script>
 
 <div class="leaderboard">
-  <img src="assets/trophy.png" alt="Logo" class="trophy_img" />
+  <img src="assets/leaderboard-cover.png" alt="Banner" class="banner" />
+  <img src="assets/king-1.png" alt="Logo" class="king_img" />
   <h1>Leaderboard</h1>
 
   {#if usersData.length > 0}
@@ -57,6 +58,12 @@
 </div>
 
 <style lang="scss">
+  .leaderboard {
+    .banner {
+      display: none;
+    }
+  }
+
   @media (max-width: 768px) {
     .leaderboard {
       h1 {
@@ -73,8 +80,13 @@
         font-size: 14px;
       }
 
-      .trophy_img {
-        width: 175px;
+      .king_img {
+        width: 125px;
+        display: none;
+      }
+
+      .banner {
+        display: block;
       }
     }
   }
@@ -98,9 +110,10 @@
     position: relative; /* Ensure positioning context for pseudo-element */
   }
 
-  .trophy_img {
+  .king_img {
     align-self: center;
     z-index: 5;
+    width: 250px;
   }
 
   table {

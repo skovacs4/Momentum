@@ -76,6 +76,11 @@
   }
 </script>
 
+<img
+  src="assets/history-banner.png"
+  alt="History Banner"
+  class="history-banner"
+/>
 <div class="tasks-container">
   <h1>History</h1>
   <table class="tasks-table">
@@ -140,10 +145,19 @@
         font-size: 14px;
       }
     }
+
+    .history-banner {
+      width: 100%;
+      object-fit: contain;
+      display: block !important;
+    }
+  }
+
+  .history-banner {
+    display: none;
   }
 
   .tasks-container {
-    margin-top: 20px;
     padding: 20px;
 
     h1 {
@@ -211,6 +225,8 @@
     max-width: 600px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     text-align: left;
+    position: absolute;
+    top: 200px;
   }
 
   .modal-content button {
@@ -229,15 +245,15 @@
   }
 
   .modal-content button {
-      align-items: center;
-      padding: 15px;
-      background-color: var(--primary-color);
-      color: var(--text);
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 25px;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: var(--text);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 25px;
   }
 
   .modal-content button:hover {
