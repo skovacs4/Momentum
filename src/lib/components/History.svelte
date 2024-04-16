@@ -2,21 +2,24 @@
 
 <!-- Import statements and component setup -->
 <script>
-  // @ts-nocheck
+// @ts-nocheck
 
   import { fetchTasksForUser } from "$lib/stores/database";
   import { auth } from "$lib/firebase";
-  import { onMount } from "svelte";
   import { tasksStore } from "$lib/stores/tasksStore";
+  import { onMount } from "svelte";
   import { SiTicktick } from "svelte-icons-pack/si";
   import { FaClock } from "svelte-icons-pack/fa";
   import { Icon } from "svelte-icons-pack";
 
+  let completedTasksCount = 0;
   /**
-   * @type {never[]}
+   * @type {{ title: any; description: any; completed: any; createdAt: string | number | Date; } | null}
    */
-  let tasks;
-  export let completedTasksCount = 0;
+  let selectedTask = null;
+
+  // Use reactive statement to automatically update tasks when tasksStore changes
+  $: tasks = $tasksStore;
 
   onMount(async () => {
     const user = auth.currentUser;
@@ -24,25 +27,20 @@
       try {
         const fetchedTasks = await fetchTasksForUser();
         tasksStore.set(fetchedTasks);
-        completedTasksCount = countCompletedTasks(fetchedTasks);
+        console.log("Fetched tasks:", fetchedTasks);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
     }
   });
 
-  tasksStore.subscribe((value) => {
-    tasks = value;
-    completedTasksCount = countCompletedTasks(tasks);
-  });
-
   /**
-   * @param {never[]} tasks
+   * @param {any} task
    */
-  function countCompletedTasks(tasks) {
-    return tasks.filter(
-      (/** @type {{ completed: any; }} */ task) => task.completed,
-    ).length;
+  function handleTaskClick(task) {
+    if (isMobileDevice()) {
+      selectedTask = task;
+    }
   }
 
   /**
@@ -58,17 +56,10 @@
   }
 
   /**
-   * @type {{ title: any; description: any; completed: any; createdAt: any; } | null}
+   * @param {any[]} tasks
    */
-  let selectedTask = null;
-
-  /**
-   * @param {any} task
-   */
-  function handleTaskClick(task) {
-    if (isMobileDevice()) {
-      selectedTask = task;
-    }
+  function countCompletedTasks(tasks) {
+    return tasks.filter((task) => task.completed).length;
   }
 
   function isMobileDevice() {
@@ -76,11 +67,7 @@
   }
 </script>
 
-<img
-  src="assets/history-banner.png"
-  alt="History Banner"
-  class="history-banner"
-/>
+<img src="assets/history-banner.png" alt="History Banner" class="history-banner" />
 <div class="tasks-container">
   <h1>History</h1>
   <table class="tasks-table">
@@ -99,12 +86,12 @@
           <td>{task.title}</td>
           <td>
             {#if task.completed}
-              <Icon src={SiTicktick} className="icon" />
+              <Icon src={SiTicktick} class="icon" />
             {:else}
-              <Icon src={FaClock} className="icon" />
+              <Icon src={FaClock} class="icon" />
             {/if}
-          </td></tr
-        >
+          </td>
+        </tr>
       {/each}
     </tbody>
   </table>
@@ -132,7 +119,7 @@
   $secondary-color: var(--magic-purple);
 
   .icon {
-    font-size: 23px !important;
+    font-size: 23px;
   }
 
   @media screen and (max-width: 768px) {
@@ -149,7 +136,7 @@
     .history-banner {
       width: 100%;
       object-fit: contain;
-      display: block !important;
+      display: block;
     }
   }
 
@@ -230,7 +217,7 @@
   }
 
   .modal-content button {
-    text-align: center !important;
+    text-align: center;
   }
 
   .modal-content h2 {
