@@ -43,14 +43,14 @@
     );
 
     // Check if at least 30 minutes have passed since task creation
-    if (timeDifferenceMinutes < 30) {
-      console.log(
-        "Cannot mark task as complete. Minimum time requirement not met.",
-      );
-      notificationType.set(3); // Set notification type for time requirement not met
-      closeModal(); // Close the modal
-      return; // Exit the function or show an error message to the user
-    }
+    // if (timeDifferenceMinutes < 30) {
+    //   console.log(
+    //     "Cannot mark task as complete. Minimum time requirement not met.",
+    //   );
+    //   notificationType.set(3); // Set notification type for time requirement not met
+    //   closeModal(); // Close the modal
+    //   return; // Exit the function or show an error message to the user
+    // }
 
     try {
       // Set task to completed in the database

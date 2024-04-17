@@ -8,6 +8,7 @@
   let password = "";
   let confirmPassword = "";
   let username = ""; // Variable for the username
+  let errorMessage = ""; // Variable to hold error message
 
   onMount(() => {
     // Add custom class to <body> when component mounts
@@ -20,12 +21,17 @@
   });
 
   async function handleSubmit() {
-    if (
-      !email ||
-      !password ||
-      (register && !confirmPassword) ||
-      (register && !username)
-    ) {
+    // Reset error message
+    errorMessage = "";
+
+    // Basic client-side validation
+    if (!email || !password) {
+      errorMessage = "Please enter both email and password.";
+      return;
+    }
+
+    if (register && password !== confirmPassword) {
+      errorMessage = "Passwords do not match.";
       return;
     }
 
@@ -53,6 +59,11 @@
         await authHandlers.login(email, password);
       } catch (err) {
         console.log(err);
+
+        // @ts-ignore
+        if (err) {
+          errorMessage = "Wrong email address or password.";
+        }
       }
     }
     if ($authStore.currentUser) {
@@ -64,7 +75,11 @@
 <div class="auth-container">
   <div class="form-container">
     <h1>{register ? "Register" : "Login"}</h1>
-    <p>{register ? "Complete the form below to create a new account." : "Welcome back!"}</p>
+    <p>
+      {register
+        ? "Complete the form below to create a new account."
+        : "Welcome back!"}
+    </p>
     <form>
       <label>
         <input bind:value={email} type="email" placeholder="Email" />
@@ -83,6 +98,9 @@
             placeholder="Confirm Password"
           />
         </label>
+      {/if}
+      {#if errorMessage}
+        <p class="error-message">{errorMessage}</p>
       {/if}
       <button on:click={handleSubmit}>{register ? "Submit" : "Sign In"}</button>
     </form>
@@ -118,11 +136,8 @@
 </div>
 
 <style lang="scss">
-
   @media screen and (max-width: 1110px) {
     .auth-container {
-
-
       .form-container {
         width: 100%;
 
@@ -163,7 +178,7 @@
     color: #333;
     font-size: 24px;
     margin-bottom: 20px;
-	text-align: center;
+    text-align: center;
   }
 
   form {
@@ -191,8 +206,8 @@
     color: #fff;
     font-size: 16px;
     cursor: pointer;
-	width: 25%;
-	margin: auto;
+    width: 25%;
+    margin: auto;
   }
 
   button:hover {
@@ -214,5 +229,12 @@
     max-width: 100%; /* Ensure image fits container width */
     height: auto;
     border-radius: 0 8px 8px 0; /* Rounded corners on the right side */
+  }
+
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
   }
 </style>

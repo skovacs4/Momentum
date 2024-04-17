@@ -43,12 +43,14 @@
       </thead>
       <tbody>
         {#each usersData as user, index (user.userId)}
-          <tr>
-            <td>{index + 1}</td>
-            <td>{user.username}</td>
-            <td>{user.totalPoints}</td>
-            <td>{user.level}</td>
-          </tr>
+          {#if user.totalPoints > 0}
+            <tr>
+              <td>{index + 1}</td>
+              <td>{user.username}</td>
+              <td>{user.totalPoints}</td>
+              <td>{user.level}</td>
+            </tr>
+          {/if}
         {/each}
       </tbody>
     </table>

@@ -6,11 +6,12 @@
 
   import { fetchTasksForUser } from "$lib/stores/database";
   import { auth } from "$lib/firebase";
-  import { tasksStore } from "$lib/stores/tasksStore";
+  import { historyTasks } from "$lib/stores/tasksStore";
   import { onMount } from "svelte";
   import { SiTicktick } from "svelte-icons-pack/si";
   import { FaClock } from "svelte-icons-pack/fa";
   import { Icon } from "svelte-icons-pack";
+  import { convertTimestamp } from "$lib/utils/dateFormatter";
 
   let completedTasksCount = 0;
   /**
@@ -18,15 +19,15 @@
    */
   let selectedTask = null;
 
-  // Use reactive statement to automatically update tasks when tasksStore changes
-  $: tasks = $tasksStore;
+  // Use reactive statement to automatically update tasks when historyTasks changes
+  $: tasks = $historyTasks;
 
   onMount(async () => {
     const user = auth.currentUser;
     if (user) {
       try {
         const fetchedTasks = await fetchTasksForUser();
-        tasksStore.set(fetchedTasks);
+        historyTasks.set(fetchedTasks);
         console.log("Fetched tasks:", fetchedTasks);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -41,18 +42,6 @@
     if (isMobileDevice()) {
       selectedTask = task;
     }
-  }
-
-  /**
-   * @param {string | number | Date} dateString
-   */
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-UK", {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-    });
   }
 
   /**
@@ -107,7 +96,7 @@
         <strong>Status:</strong>
         {selectedTask.completed ? "Completed" : "Pending"}
       </p>
-      <p><strong>Created:</strong> {formatDate(selectedTask.createdAt)}</p>
+      <p><strong>Created:</strong> {convertTimestamp(selectedTask.createdAt, "full")}</p>
       <button on:click={() => (selectedTask = null)}>Close</button>
     </div>
   </div>

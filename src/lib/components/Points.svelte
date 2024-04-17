@@ -1,16 +1,17 @@
 <script>
-// @ts-nocheck
+  // @ts-nocheck
 
   import { auth } from "$lib/firebase";
   import { onMount } from "svelte";
   import { userStatsStore } from "$lib/stores/tasksStore";
   import { calculateUserPointsAndLevel } from "$lib/stores/database";
+  import { notificationType } from "$lib/stores/notificationsStore";
 
   let userStats = {
     totalPoints: 0,
     level: 1,
     currentLevelPoints: 0,
-    pointsPerLevel: 30
+    pointsPerLevel: 30,
   };
 
   onMount(async () => {
@@ -18,19 +19,28 @@
     if (user) {
       try {
         const userId = user.uid;
-        const { totalPoints, level } = await calculateUserPointsAndLevel(userId);
+        const { totalPoints, level } =
+          await calculateUserPointsAndLevel(userId);
 
         userStatsStore.set({ totalPoints, level, pointsPerLevel: 30 });
       } catch (error) {
-        console.error("Error fetching tasks or calculating points/level:", error);
+        console.error(
+          "Error fetching tasks or calculating points/level:",
+          error
+        );
       }
     }
 
+    // Subscribe to userStatsStore and update userStats accordingly
     const unsubscribe = userStatsStore.subscribe((stats) => {
-      userStats = { ...stats, currentLevelPoints: stats.totalPoints % stats.pointsPerLevel };
+      userStats = {
+        ...stats,
+        currentLevelPoints: stats.totalPoints % stats.pointsPerLevel,
+      };
     });
 
-    return unsubscribe; // Clean up subscription on component unmount
+    // Clean up subscription on component unmount
+    return unsubscribe;
   });
 </script>
 
@@ -44,7 +54,8 @@
   <div class="progress-bar">
     <div
       class="progress"
-      style="width: {(userStats.currentLevelPoints / userStats.pointsPerLevel) * 100}%;"
+      style="width: {(userStats.currentLevelPoints / userStats.pointsPerLevel) *
+        100}%;"
     ></div>
     <div class="level-text">Lvl. {userStats.level}</div>
   </div>
@@ -70,7 +81,11 @@
     top: 0;
     left: 0;
     height: 100%;
-    background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+    background: linear-gradient(
+      135deg,
+      var(--accent-gold),
+      var(--accent-orange)
+    );
     transition: width 0.3s ease-in-out;
   }
 
