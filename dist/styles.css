@@ -1,0 +1,353 @@
+/* Global Reset and Container Styles */
+:global(body) {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333; }
+
+@media screen and (max-width: 768px) {
+  body {
+    background: linear-gradient(to bottom, #363636, var(--primary-color), #333); } }
+
+@media screen and (min-width: 768px) {
+  body {
+    background: linear-gradient(to bottom, #363636, var(--primary-color)); } }
+
+/* Color Variables */
+:root {
+  --primary-color: #6a5acd;
+  /* Deep Purple */
+  --secondary-color: #008080;
+  /* Teal */
+  --accent-gold: #ffd700;
+  /* Gold */
+  --accent-orange: #ff7f50;
+  /* Pinkish-Orange */
+  --magic-purple: #432874;
+  /* Magic Purple */
+  --validation: rgb(8, 87, 8);
+  --text: #dedede; }
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding-top: 60px; }
+
+.modal-content {
+  background-color: var(--magic-purple);
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #333;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 12px;
+  color: var(--text);
+  position: relative; }
+
+.modal-header,
+.modal-footer {
+  padding: 10px 0;
+  text-align: center; }
+  .modal-header h2,
+  .modal-footer h2 {
+    text-align: left; }
+
+.modal-body {
+  padding: 20px 0; }
+
+.close {
+  color: var(--text);
+  font-size: 36px;
+  font-weight: bold;
+  position: absolute;
+  top: 5px;
+  right: 30px; }
+
+.close:hover,
+.close:focus {
+  color: white;
+  text-decoration: none;
+  cursor: pointer; }
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold; }
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 10px; }
+
+input,
+textarea,
+select:hover {
+  border: 1px solid var(--accent-orange) !important; }
+
+.error {
+  color: var(--accent-orange);
+  margin-top: 5px;
+  font-size: 14px; }
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 25px; }
+
+.modal-footer button {
+  align-items: center;
+  padding: 15px;
+  background-color: var(--primary-color);
+  color: var(--text);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; }
+  .modal-footer button .add-task-icon {
+    transform: rotateZ(45deg);
+    font-size: 23px; }
+
+.modal-footer button:hover {
+  background-color: var(--secondary-color); }
+
+@media screen and (max-width: 768px) {
+  .dashboard {
+    margin-bottom: 50px; }
+    .dashboard .character-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      color: var(--text);
+      align-items: center;
+      border-bottom: 1px solid var(--magic-purple);
+      padding-bottom: 25px; }
+      .dashboard .character-container .points-container {
+        margin-top: 5px !important; }
+        .dashboard .character-container .points-container h1 {
+          font-size: 23px; }
+      .dashboard .character-container .character img {
+        border: 1px solid var(--primary-color); }
+    .dashboard .tasks-container {
+      padding: 7.5px;
+      margin-top: 15px; }
+      .dashboard .tasks-container .task {
+        display: flex;
+        position: relative;
+        justify-content: center;
+        margin: 15px 0px;
+        border-radius: 6px;
+        background-color: var(--magic-purple);
+        color: var(--text); }
+        .dashboard .tasks-container .task .task-details {
+          width: 75%;
+          padding: 10px; }
+          .dashboard .tasks-container .task .task-details p {
+            margin: 3px; }
+          .dashboard .tasks-container .task .task-details .description {
+            word-wrap: break-word;
+            opacity: 0.75; }
+        .dashboard .tasks-container .task .task-buttons {
+          display: flex;
+          justify-content: flex-end;
+          width: 25%; }
+          .dashboard .tasks-container .task .task-buttons .edit {
+            position: absolute;
+            top: 0;
+            opacity: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 75%; }
+          .dashboard .tasks-container .task .task-buttons .complete {
+            height: 100%;
+            background-color: var(--primary-color);
+            border: none;
+            color: #e0e0e0; }
+            .dashboard .tasks-container .task .task-buttons .complete .complete-icon {
+              font-size: 26px; }
+              .dashboard .tasks-container .task .task-buttons .complete .complete-icon path {
+                fill: white;
+                stroke: var(--text) !important; }
+              .dashboard .tasks-container .task .task-buttons .complete .complete-icon polyline {
+                stroke: var(--text) !important; }
+            .dashboard .tasks-container .task .task-buttons .complete .complete-icon:hover path {
+              fill: green !important;
+              stroke: var(--text) !important; }
+            .dashboard .tasks-container .task .task-buttons .complete .complete-icon:hover polyline {
+              stroke: var(--text) !important; }
+    .dashboard .add-task-btn {
+      margin: 25px auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px;
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      transform: rotateZ(45deg); }
+      .dashboard .add-task-btn .add-task-icon {
+        transform: rotateZ(45deg);
+        font-size: 23px; }
+    .dashboard .add-task-btn:hover {
+      background-color: var(--secondary-color);
+      font-weight: 600; } }
+
+@media screen and (max-width: 475px) {
+  .dashboard h1 {
+    font-size: 16px; }
+  .dashboard .character-container .points-container {
+    font-size: 12px; }
+  .dashboard .character-container .character img {
+    width: 150px; } }
+
+@media screen and (min-width: 768px) {
+  /* Global stylesheet or component style section */
+  .auth-page {
+    height: 100vh;
+    overflow: hidden; }
+  h1 {
+    font-size: 42px; }
+  .dashboard {
+    margin-bottom: 50px;
+    min-height: 100vh;
+    /* Task Styles */
+    /* Use color variables for button colors */
+    /* CompleteButton Styles (consider using the accent colors) */ }
+    .dashboard .complete-icon {
+      font-size: 26px; }
+      .dashboard .complete-icon path {
+        fill: white;
+        stroke: var(--text) !important; }
+      .dashboard .complete-icon polyline {
+        stroke: var(--text) !important; }
+    .dashboard .edit-icon {
+      font-size: 26px; }
+      .dashboard .edit-icon path {
+        stroke: var(--accent-orange) !important; }
+      .dashboard .edit-icon polyline {
+        stroke: var(--accent-orange) !important; }
+    .dashboard .complete-icon:hover path {
+      fill: green !important;
+      stroke: var(--text) !important; }
+    .dashboard .complete-icon:hover polyline {
+      stroke: var(--text) !important; }
+    .dashboard .character-container {
+      display: flex;
+      width: 75%;
+      margin: auto;
+      justify-content: center;
+      gap: 150px;
+      align-items: center;
+      padding: 25px 0px;
+      color: var(--text); }
+      .dashboard .character-container .character img {
+        width: 375px;
+        border: var(--magic-purple) solid 2px; }
+      .dashboard .character-container .points-container {
+        width: 40%; }
+        .dashboard .character-container .points-container .stats {
+          margin-bottom: 30px; }
+        .dashboard .character-container .points-container p {
+          margin-bottom: 25px;
+          font-size: 21px; }
+    .dashboard .add-task-btn {
+      margin: 25px auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease; }
+    .dashboard .add-task-btn::before {
+      content: "Add Task"; }
+    .dashboard .add-task-btn:hover {
+      background-color: var(--accent-orange);
+      font-weight: 600; }
+    .dashboard .tasks-container {
+      max-width: 1150px;
+      padding: 20px;
+      display: grid;
+      gap: 20px;
+      margin: auto; }
+    .dashboard .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background-color: var(--magic-purple);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      color: var(--text); }
+      .dashboard .task .task-details {
+        flex-wrap: wrap;
+        word-wrap: break-word; }
+        .dashboard .task .task-details p {
+          margin: 2px; }
+        .dashboard .task .task-details .description {
+          opacity: 0.8; }
+      .dashboard .task .task-buttons {
+        display: flex;
+        justify-content: end; }
+      .dashboard .task .title {
+        font-size: 17.5px; }
+    .dashboard .task:hover {
+      box-shadow: 1px 2px 1px rgba(var(--secondary-color), 0.9); }
+    .dashboard .task span {
+      font-size: 16px;
+      flex: 1;
+      padding-left: 25px; }
+    .dashboard .task button {
+      padding: 8px 16px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease; }
+    .dashboard .task button {
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 15px; }
+    .dashboard .task button:first-child:hover {
+      background-color: var(--accent-orange); }
+    .dashboard .task button:last-child:hover {
+      background-color: var(--secondary-color); }
+    .dashboard .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      z-index: 1000; }
+    .dashboard .complete-button {
+      padding: 8px 16px;
+      background-color: var(--accent-gold);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease; }
+    .dashboard .complete-button:hover {
+      background-color: #e69900;
+      /* Adjust HSL values for desired darkening */ } }
