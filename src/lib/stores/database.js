@@ -30,7 +30,11 @@ export const fetchTasksForUser = async () => {
   });
 };
 
-export const addTask = async (/** @type {string} */ title, /** @type {string} */ description, /** @type {string} */ difficulty) => {
+export const addTask = async (
+  /** @type {string} */ title,
+  /** @type {string} */ description,
+  /** @type {string} */ difficulty
+) => {
   try {
     const user = auth.currentUser;
     if (!user) {
@@ -48,10 +52,10 @@ export const addTask = async (/** @type {string} */ title, /** @type {string} */
       throw new Error("User not found in 'users' collection");
     }
 
-    const username = userDocSnapshot.data().username;  
+    const username = userDocSnapshot.data().username;
 
     // Add the new task document to the collection
-    await addDoc(tasksCollectionRef, {
+    const newTaskRef = await addDoc(tasksCollectionRef, {
       userId,
       username,
       title,
@@ -61,7 +65,17 @@ export const addTask = async (/** @type {string} */ title, /** @type {string} */
       completed: false,
     });
 
+    // Fetch the newly created task details including ID
+    const newTaskDocSnapshot = await getDoc(newTaskRef);
+
+    if (!newTaskDocSnapshot.exists()) {
+      throw new Error("Newly created task document not found");
+    }
+
+    const newTaskData = { id: newTaskDocSnapshot.id, ...newTaskDocSnapshot.data() };
+
     console.log("Task added successfully.");
+    return newTaskData;
   } catch (error) {
     console.error("Error adding task:", error);
     throw error; // Rethrow to let the caller handle it

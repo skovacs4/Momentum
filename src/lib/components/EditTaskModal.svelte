@@ -1,8 +1,10 @@
 <script>
-  // @ts-nocheck
+// @ts-nocheck
+
 
   import { editTask } from "$lib/stores/database";
-  import { selectedTaskStore } from "$lib/stores/tasksStore"; // Import the selectedTaskStore
+  import { selectedTaskStore, tasksStore } from "$lib/stores/tasksStore";
+  import { notificationType } from "$lib/stores/notificationsStore";
 
   let newTitle = ""; // New title for the task
   let newDescription = ""; // New description for the task
@@ -10,23 +12,38 @@
   // Function to handle form submission
   async function handleSubmit() {
     const task = $selectedTaskStore; // Get the selected task from the store
+    console.log(task);
 
     if (!newTitle || newTitle.trim() === "") {
       console.error("New task title cannot be empty.");
       return;
     }
 
-    if (!newDescription || newDescription.trim().length < 30) {
-      console.error("New task description must be at least 30 characters.");
+    if (!newDescription || newDescription.trim().length > 60) {
+      console.error("New task description must be a maximum if 60 characters.");
       return;
     }
 
     const taskId = task.id; // Get the document ID of the task
-
     try {
-      // Update the task with the new title and description
+      // Update the task with the new title and description in the database
       await editTask(taskId, { title: newTitle, description: newDescription });
       console.log("Task updated successfully.");
+
+      // Update tasksStore with the modified task
+      tasksStore.update((tasks) => {
+        // Find the task in the tasksStore and update its title and description
+        const updatedTasks = tasks.map((t) => {
+          if (t.id === taskId) {
+            return { ...t, title: newTitle, description: newDescription };
+          }
+          return t;
+        });
+
+        return updatedTasks;
+      });
+
+      notificationType.set(2); // Trigger task changed notif
       selectedTaskStore.set(null); // Reset the selected task
     } catch (error) {
       console.error("Error updating task:", error);
@@ -45,19 +62,32 @@
   <div class="modal-content">
     <div class="modal-header">
       <h2>Edit Task</h2>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <span class="close" on:click={closeModal}>&times;</span>
     </div>
     <div class="modal-body">
+      <!-- svelte-ignore a11y-label-has-associated-control -->
       <label>New Title:</label>
-      <input type="text" bind:value={newTitle} placeholder="{$selectedTaskStore ? $selectedTaskStore.title : ""}"/>
+      <input
+        type="text"
+        bind:value={newTitle}
+        placeholder={$selectedTaskStore ? $selectedTaskStore.title : ""}
+      />
       {#if $selectedTaskStore && (!newTitle || newTitle.trim() === "")}
         <p class="error">Please enter a new title.</p>
       {/if}
 
+      <!-- svelte-ignore a11y-label-has-associated-control -->
       <label>New Description:</label>
-      <textarea bind:value={newDescription} placeholder="{$selectedTaskStore ? $selectedTaskStore.description : ""}"></textarea>
-      {#if $selectedTaskStore && (!newDescription || newDescription.trim().length < 30)}
-        <p class="error">Please enter a new description with at least 30 characters.</p>
+      <textarea
+        bind:value={newDescription}
+        placeholder={$selectedTaskStore ? $selectedTaskStore.description : ""}
+      ></textarea>
+      {#if $selectedTaskStore && (!newDescription || newDescription.trim().length > 60)}
+        <p class="error">
+          Please enter a new description with a maximum of 60 characters.
+        </p>
       {/if}
 
       <div class="current-title">
@@ -101,7 +131,7 @@
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
     text-align: center;
-    
+
     h2 {
       text-align: left;
     }
@@ -133,7 +163,8 @@
     margin-top: 5px;
   }
 
-  .current-title, .current-description {
+  .current-title,
+  .current-description {
     margin-top: 15px;
     font-weight: bold;
   }

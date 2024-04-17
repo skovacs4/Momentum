@@ -1,7 +1,10 @@
 <script>
+// @ts-nocheck
+
   import { createEventDispatcher } from "svelte";
   import { addTask } from "$lib/stores/database";
   import { tasksStore } from "$lib/stores/tasksStore";
+  import { notificationType } from "$lib/stores/notificationsStore";
 
   /**
    * @type {any}
@@ -54,24 +57,54 @@
     const capitalizedTitle =
       title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
 
-    // Add the task with capitalized title to the database
+    // Get the current timestamp
+    const currentTime = new Date().toISOString();
+
+    console.log(
+      "Task added to task store successfully:",
+      capitalizedTitle,
+      description,
+      difficulty,
+      completed,
+      currentTime,
+    );
+
+    // Add the task with capitalized title to the database and handle the returned task
     addTask(capitalizedTitle, description, difficulty)
-      .then((newTask) => {
-        console.log("Task added successfully:", capitalizedTitle, description, difficulty, completed);
+      .then((newlyAddedTask) => {
+        console.log("Newly added task:", newlyAddedTask);
 
-        // Update tasksStore with the newly added task
+        // Trigger Added Task Notification
+        notificationType.set(1);
+
+        // Reset form after task is added
+        closeModal();
+
+        // Update tasksStore with the newly added task including the timestamp
         tasksStore.update((tasks) => [
-          // @ts-ignore
           ...tasks,
-          // @ts-ignore
-          { capitalizedTitle, description, difficulty, completed },
+          {
+            ...newlyAddedTask,
+            completed,
+            addedAt: currentTime, // Adding current timestamp to the task object
+          },
         ]);
-
-        closeModal(); // Reset form after task is added
       })
       .catch((error) => {
         console.error("Error adding task:", error);
       });
+
+    // Update tasksStore with the newly added task including the timestamp
+    tasksStore.update((tasks) => [
+      // @ts-ignore
+      ...tasks,
+      // @ts-ignore
+      {
+        newlyAddedTask,
+        completed,
+        addedAt: currentTime, // Adding current timestamp to the task object
+      },
+    ]);
   }
 </script>
 

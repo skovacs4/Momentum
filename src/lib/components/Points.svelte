@@ -1,59 +1,56 @@
 <script>
+// @ts-nocheck
+
   import { auth } from "$lib/firebase";
   import { onMount } from "svelte";
+  import { userStatsStore } from "$lib/stores/tasksStore";
   import { calculateUserPointsAndLevel } from "$lib/stores/database";
 
-  // Define exported variables
-  export let completedTasksCount = 0;
-  export let totalPoints = 0;
-  export let level = 1;
-  export let currentLevelPoints = 0;
-
-  const pointsPerLevel = 30; // Define the points required to reach the next level
+  let userStats = {
+    totalPoints: 0,
+    level: 1,
+    currentLevelPoints: 0,
+    pointsPerLevel: 30
+  };
 
   onMount(async () => {
     const user = auth.currentUser;
     if (user) {
       try {
         const userId = user.uid;
-        const { totalPoints: generatedPoints, level: calculatedLevel } =
-          await calculateUserPointsAndLevel(userId);
+        const { totalPoints, level } = await calculateUserPointsAndLevel(userId);
 
-        // Update component variables with calculated values
-        totalPoints = generatedPoints;
-        level = calculatedLevel;
-
-        // Calculate current points within the current level
-        currentLevelPoints = totalPoints % pointsPerLevel;
+        userStatsStore.set({ totalPoints, level, pointsPerLevel: 30 });
       } catch (error) {
-        console.error(
-          "Error fetching tasks or calculating points/level:",
-          error
-        );
+        console.error("Error fetching tasks or calculating points/level:", error);
       }
     }
+
+    const unsubscribe = userStatsStore.subscribe((stats) => {
+      userStats = { ...stats, currentLevelPoints: stats.totalPoints % stats.pointsPerLevel };
+    });
+
+    return unsubscribe; // Clean up subscription on component unmount
   });
 </script>
 
 <div class="points-container">
   <h1 class="stats">Stats</h1>
   <!-- Display calculated total points and level -->
-  <p>Total Generated Points: {totalPoints}</p>
+  <p>Total Generated Points: {userStats.totalPoints}</p>
   <!-- Display current points within the current level -->
-  <p>Current Level Points: {currentLevelPoints}</p>
+  <p>Current Level Points: {userStats.currentLevelPoints}</p>
   <!-- Progress bar for level completion -->
   <div class="progress-bar">
     <div
       class="progress"
-      style="width: {(currentLevelPoints / pointsPerLevel) * 100}%;"
+      style="width: {(userStats.currentLevelPoints / userStats.pointsPerLevel) * 100}%;"
     ></div>
-    <div class="level-text">{level}</div>
+    <div class="level-text">Lvl. {userStats.level}</div>
   </div>
-  <p>Lvl. {level}</p>
 </div>
 
 <style lang="scss">
-
   .points-container {
     margin-top: 20px;
   }
@@ -62,7 +59,6 @@
     position: relative;
     width: 100%;
     height: 20px;
-    // background-color: var(--magic-purple);
     border-radius: 5px;
     margin-top: 10px;
     overflow: hidden;
@@ -74,8 +70,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    // background-color: var(--accent-orange);
-    background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
     transition: width 0.3s ease-in-out;
   }
 

@@ -86,9 +86,9 @@
           <td>{task.title}</td>
           <td>
             {#if task.completed}
-              <Icon src={SiTicktick} class="icon" />
+              <Icon src={SiTicktick} className="icon" />
             {:else}
-              <Icon src={FaClock} class="icon" />
+              <Icon src={FaClock} className="icon" />
             {/if}
           </td>
         </tr>
@@ -136,7 +136,7 @@
     .history-banner {
       width: 100%;
       object-fit: contain;
-      display: block;
+      display: block !important;
     }
   }
 

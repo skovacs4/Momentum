@@ -7,6 +7,7 @@
   import { goto } from "$app/navigation";
   import Footer from "$lib/components/Footer.svelte";
   import Header from "$lib/components/Header.svelte";
+  import Notification from '$lib/components/Notification.svelte';
 
   onMount(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -32,6 +33,7 @@
 <Header />
 <main class="mainContainer">
   <slot />
+  <Notification />
 </main>
 <Footer />
 
