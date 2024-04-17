@@ -25,10 +25,11 @@
                 break;
             case 3:
                 message = "Please wait at least 30 minutes before completing a task!";
-                icon = "";
+                icon = "🪙";
+                break;
             default:
                 message = "";
-                icon = "";
+                icon = "🪙";
                 break;
         }
 

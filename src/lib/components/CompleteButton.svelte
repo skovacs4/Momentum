@@ -5,69 +5,50 @@
   import { editTask } from "$lib/stores/database";
   import { notificationType } from "$lib/stores/notificationsStore";
   import { userStatsStore } from "$lib/stores/tasksStore";
+  import { Timestamp } from "firebase/firestore";
 
-  function convertTimestamp(timestamp, format = "full") {
-    let date = timestamp.toDate(); // Convert Firestore timestamp to JavaScript Date object
-    let mm = date.getMonth() + 1; // Get month (adding 1 because getMonth() returns zero-based index)
-    let dd = date.getDate(); // Get day of the month
-    let yyyy = date.getFullYear(); // Get full year
-    let hh = date.getHours(); // Get hours (in 24-hour format)
-    let min = date.getMinutes(); // Get minutes
-    let ss = date.getSeconds(); // Get seconds
+  const currentTimestamp = Timestamp.now(); // Get current Firestore Timestamp
 
-    // Ensure mm, dd, hh, min, and ss are formatted with leading zeros if necessary
-    let formattedMM = mm < 10 ? "0" + mm : mm;
-    let formattedDD = dd < 10 ? "0" + dd : dd;
-    let formattedHH = hh < 10 ? "0" + hh : hh;
-    let formattedMin = min < 10 ? "0" + min : min;
-    let formattedSS = ss < 10 ? "0" + ss : ss;
+  // Function to convert Firestore Timestamp to JavaScript Date
+  function timestampToDate(timestamp) {
+    const seconds = timestamp.seconds;
+    const nanoseconds = timestamp.nanoseconds;
+    return new Date(seconds * 1000 + nanoseconds / 1000000); // Convert to milliseconds
+  }
 
-    // Construct the formatted date string based on the format argument
-    switch (format) {
-      case "full":
-        return `${formattedMM}/${formattedDD}/${yyyy} ${formattedHH}:${formattedMin}:${formattedSS}`;
-      case "time":
-        return `${formattedHH}:${formattedMin}:${formattedSS}`;
-      case "date":
-        return `${formattedMM}/${formattedDD}/${yyyy}`;
-      default:
-        // If an invalid format argument is provided, return the full date by default
-        return `${formattedMM}/${formattedDD}/${yyyy} ${formattedHH}:${formattedMin}:${formattedSS}`;
-    }
+  // Function to calculate time difference in minutes
+  function calculateTimeDifferenceInMinutes(timestamp1, timestamp2) {
+    const date1 = timestampToDate(timestamp1);
+    const date2 = timestampToDate(timestamp2);
+    const differenceInMilliseconds = date1 - date2;
+    return differenceInMilliseconds / (1000 * 60); // Convert milliseconds to minutes
   }
 
   // Function to mark the task as completed
   async function completeTask() {
     const task = $selectedTaskStoreSecond; // Get the selected task from the store
+    const createdAtTimestamp = $selectedTaskStoreSecond.createdAt;
 
-    // Get the current time in milliseconds
-    const currentTime = convertTimestamp(
-      Date.now(),
-      "time",
-    ); // Parse current time
+    console.log("Standard format:", createdAtTimestamp);
 
-    // Convert the createdAt timestamp to milliseconds using convertTimestamp function
-    const timestamp = convertTimestamp(
-      $selectedTaskStoreSecond.createdAt,
-      "time",
-    ); // Parse as float
-
-    console.log("Milliseconds: ", currentTime);
-
-    // Calculate the time difference in minutes between currentTime and createdAt
-    const timeDifferenceMinutes = (currentTime - timestamp) / (1000 * 60);
+    // Calculate time difference in minutes
+    const timeDifferenceMinutes = calculateTimeDifferenceInMinutes(
+      currentTimestamp,
+      createdAtTimestamp,
+    );
 
     console.log(
       "Time difference since task creation (minutes):",
       timeDifferenceMinutes,
     );
 
-    // Check if at least 30 minutes have passed since the task was created
+    // Check if at least 30 minutes have passed since task creation
     if (timeDifferenceMinutes < 30) {
       console.log(
         "Cannot mark task as complete. Minimum time requirement not met.",
       );
       notificationType.set(3); // Set notification type for time requirement not met
+      closeModal(); // Close the modal
       return; // Exit the function or show an error message to the user
     }
 
