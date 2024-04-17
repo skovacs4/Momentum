@@ -12,9 +12,6 @@
   import { FaClock } from "svelte-icons-pack/fa";
   import { Icon } from "svelte-icons-pack";
 
-  /**
-   * @type {never[]}
-   */
   let tasks;
   export let completedTasksCount = 0;
 
@@ -22,18 +19,19 @@
     const user = auth.currentUser;
     if (user) {
       try {
-        const fetchedTasks = await fetchTasksForUser();
-        tasksStore.set(fetchedTasks);
-        completedTasksCount = countCompletedTasks(fetchedTasks);
+        const tasks = await fetchTasksForUser();
+        console.log("Fetched tasks:", tasks);
+        tasksStore.set(tasks);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
     }
   });
 
+  // Subscribe to tasksStore updates
   tasksStore.subscribe((value) => {
     tasks = value;
-    completedTasksCount = countCompletedTasks(tasks);
+    console.log("Second load: " + tasks);
   });
 
   /**

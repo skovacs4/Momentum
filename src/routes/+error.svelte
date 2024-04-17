@@ -23,7 +23,6 @@
 <style lang="scss">
     .error-page {
         // background-color: var(--magic-purple);
-        background: linear-gradient(120deg, #6a5acd, #00bfff); /* Gamified linear gradient */
         min-height: 100vh;
     }
     .container {

@@ -19,6 +19,14 @@
     transform: translate(-50%, -50%);
   }
 
+  @media screen and (max-width: 475px) {
+    .footer-content {
+      img {
+        opacity: 0.2;
+      }
+    }
+  }
+
   @media screen and (max-width: 768px) {
     .footer {
       background-color: #313254;
