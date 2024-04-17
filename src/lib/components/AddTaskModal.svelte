@@ -1,17 +1,19 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import { addTask } from "$lib/stores/database";
+  import { tasksStore } from "$lib/stores/tasksStore";
 
   /**
-     * @type {any}
-     */
-   export let showModal;
+   * @type {any}
+   */
+  export let showModal;
 
   const dispatch = createEventDispatcher();
 
   let title = "";
   let description = "";
   let difficulty = "";
+  let completed = false;
 
   let titleError = "";
   let descriptionError = "";
@@ -27,8 +29,8 @@
   }
 
   /**
-     * @param {{ preventDefault: () => void; }} event
-     */
+   * @param {{ preventDefault: () => void; }} event
+   */
   function handleSubmit(event) {
     event.preventDefault();
 
@@ -43,17 +45,28 @@
     }
 
     if (!description || description.trim().length > 60) {
-      descriptionError = "Please enter a maximum of 60 characters for the description.";
+      descriptionError =
+        "Please enter a maximum of 60 characters for the description.";
       return;
     }
 
     // Capitalize the title
-    const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
+    const capitalizedTitle =
+      title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
 
-    // If form is valid, add the task with capitalized title
+    // Add the task with capitalized title to the database
     addTask(capitalizedTitle, description, difficulty)
-      .then(() => {
-        console.log("Task added successfully.");
+      .then((newTask) => {
+        console.log("Task added successfully:", capitalizedTitle, description, difficulty, completed);
+
+        // Update tasksStore with the newly added task
+        tasksStore.update((tasks) => [
+          // @ts-ignore
+          ...tasks,
+          // @ts-ignore
+          { capitalizedTitle, description, difficulty, completed },
+        ]);
+
         closeModal(); // Reset form after task is added
       })
       .catch((error) => {
@@ -64,8 +77,10 @@
 
 <div class="modal" style={showModal ? "display: block;" : "display: none;"}>
   <div class="modal-content">
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="modal-header">
       <h2>Add New Task</h2>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <span class="close" on:click={closeModal}>&times;</span>
     </div>
 
@@ -95,7 +110,11 @@
         {/if}
 
         <label for="taskDifficulty">Difficulty:</label>
-        <select id="taskDifficulty" name="taskDifficulty" bind:value={difficulty}>
+        <select
+          id="taskDifficulty"
+          name="taskDifficulty"
+          bind:value={difficulty}
+        >
           <option value="easy">Easy</option>
           <option value="moderate">Moderate</option>
           <option value="hard">Hard</option>
@@ -111,5 +130,4 @@
 </div>
 
 <style lang="scss">
-
 </style>
